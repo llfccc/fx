@@ -1,11 +1,28 @@
 package com.example.demo.Entity;
 
-public class Memorial {
+/**
+ * \* Created with IntelliJ IDEA.
+ * \* User: llf
+ * \* Date: 2018/4/26
+ * \* Time: 21:06
+ * \* Description:
+ * \
+ */
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+
+@Entity
+@Table(name="d_star")
+public class Star {
+    @Id
+    @GeneratedValue
     private int id;
+
     private String name;
     private String avatar;
-
-
     private int valid;
 
     public int getId() {
@@ -32,22 +49,11 @@ public class Memorial {
         this.avatar = avatar;
     }
 
-
     public int getValid() {
         return valid;
     }
 
     public void setValid(int valid) {
         this.valid = valid;
-    }
-
-
-    @Override
-    public String toString() {
-        return "Memorial{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", money=" + valid +
-                '}';
     }
 }

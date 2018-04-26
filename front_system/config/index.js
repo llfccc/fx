@@ -28,11 +28,11 @@ module.exports = {
         assetsSubDirectory: 'static',
         assetsPublicPath: '/',
         proxyTable: {
-            '/memorial': {
-                target: 'http://localhost:8080',
+            '/star': {
+                target: 'http://localhost:800',
                 changeOrigin: true,
                 pathRewrite: {
-                    '/memorial': 'memorial'
+                    '/star': 'star'
                 },
             },
             '/accounts': {
@@ -51,7 +51,7 @@ module.exports = {
             },
 
             '/message': {
-                
+
                 target: 'http://localhost:8080',
                 changeOrigin: true,
                 pathRewrite: {

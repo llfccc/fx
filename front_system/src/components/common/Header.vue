@@ -1,6 +1,6 @@
 <template>
     <div class="header">
-        <div class="logo">览众数据周报系统</div>
+        <div class="logo">CMS</div>
         <div class="user-info">
             <el-dropdown trigger="click" @command="handleCommand">
                 <span class="el-dropdown-link">

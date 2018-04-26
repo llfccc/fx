@@ -1,20 +1,39 @@
 <template>
     <div>
+        <!--<div class="filter" style="margin-bottom:20px">-->
+        <!--<el-row :gutter="24">-->
+        <!--<span class="demonstration">项目名：</span>-->
+        <!--<el-select v-model="filters.project_id" clearable filterable placeholder="项目名">-->
+        <!--<el-option v-for="item in project_item_list" :key="item.id" :label="item.project_name"-->
+        <!--:value="item.id">-->
+        <!--</el-option>-->
+        <!--</el-select>-->
+        <!--<span class="demonstration">时间：</span>-->
+        <!--<el-date-picker v-model="filters.filter_date" type="daterange" value-format="yyyy-MM-dd" align="right"-->
+        <!--placeholder="选择日期范围" @change='filterDateChange' :picker-options="pickerOptions2">-->
+        <!--</el-date-picker>-->
+        <!--<el-button type="primary" v-on:click="get_star_list">查询</el-button>-->
+        <!--<el-button type="success" @click="handleAdd">新增</el-button>-->
+        <!--</el-row>-->
+        <!--</div>-->
         <div class="filter" style="margin-bottom:20px">
-            <el-row :gutter="24">
-                <span class="demonstration">项目名：</span>
-                <el-select v-model="filters.project_id" clearable filterable placeholder="项目名">
-                    <el-option v-for="item in project_item_list" :key="item.id" :label="item.project_name"
-                               :value="item.id">
-                    </el-option>
-                </el-select>
-                <span class="demonstration">时间：</span>
-                <el-date-picker v-model="filters.filter_date" type="daterange" value-format="yyyy-MM-dd" align="right"
-                                placeholder="选择日期范围" @change='filterDateChange' :picker-options="pickerOptions2">
-                </el-date-picker>
-                <el-button type="primary" v-on:click="get_dev_event">查询</el-button>
-                <el-button type="success" @click="handleAdd">新增</el-button>
-            </el-row>
+
+            <el-input
+                placeholder="姓名"
+                prefix-icon="el-icon-search"
+                v-model="filters.name" clearable>
+            </el-input>
+
+            <span class="demonstration">时间：</span>
+            <el-date-picker v-model="filters.filter_date" type="daterange" value-format="yyyy-MM-dd"
+                            align="right"
+                            placeholder="飞升日期范围" @change='filterDateChange' :picker-options="pickerOptions2">
+            </el-date-picker>
+
+
+            <el-button type="primary" v-on:click="get_star_list">查询</el-button>
+            <el-button type="success" @click="handleAdd">新增</el-button>
+
         </div>
 
         <el-dialog title="新增" :visible.sync="addFormVisible" :close-on-click-modal="false" size='calcDialogSize'>
@@ -264,7 +283,7 @@
         </el-dialog>
 
         <template>
-            <el-table :data="filter_work_list" style="width: 100%" border>
+            <el-table :data="star_list" style="width: 100%" border>
                 <el-table-column type="expand">
                     <template slot-scope="props">
                         <el-form label-position="left" inline class="demo-table-expand">
@@ -303,11 +322,11 @@
                         </el-form>
                     </template>
                 </el-table-column>
-                <el-table-column label="日期" prop="event_date" width="160">
+                <el-table-column label="日期" prop="id" width="160">
                 </el-table-column>
-                <el-table-column label="开始" prop="start_time" width="110">
+                <el-table-column label="开始" prop="name" width="110">
                 </el-table-column>
-                <el-table-column label="结束" prop="end_time" width="110">
+                <el-table-column label="头像" prop="avatar" width="110">
                 </el-table-column>
                 <el-table-column label="项目名称" prop="project_name" min-length="120">
                 </el-table-column>
@@ -384,8 +403,8 @@
                     }]
                 },
                 allow_submit: false,
-                work_list: [],
-                filter_work_list: [],
+                star_list: [],
+                filter_star_list: [],
                 project_type_list: [],
                 project_item_list: [],
                 event_type_list: [],
@@ -474,11 +493,11 @@
         created() {
             // 组件创建完后获取数据
             var self = this;
-            this.get_dev_event();
-            this.get_project_type();
-            this.get_event_types();
-            this.get_type_projects(-1)
-            this.get_users();
+            this.get_star_list();
+            // this.get_project_type();
+            // this.get_event_types();
+            // this.get_type_projects(-1)
+            // this.get_users();
         },
         filters: {},
         computed: {
@@ -629,20 +648,20 @@
             },
             checkTime2: function (timestamp1, timestamp2, current_event_date, exclude_id) {
                 //检查当天时间范围是否已经填了，没有使用过的时间范围则返回true,否则返回false
-                //work_list为以时间逆序的列表
+                //star_list为以时间逆序的列表
                 //excude_id为排除检查的事件id，主要为了避免更新事件时无法因时间重复无法更新选中的事件
                 var self = this;
                 var computed_list = new Array()
 
-                for (var i = 0; i < this.work_list.length; i++) {
-                    let a = new Date(this.work_list[i].event_date + " " + "00:00:00");
+                for (var i = 0; i < this.star_list.length; i++) {
+                    let a = new Date(this.star_list[i].event_date + " " + "00:00:00");
                     let b = new Date(current_event_date + " " + "00:00:00");
                     //此处一定要用getTime，否则变成对象的比较了
-                    if (a.getTime() == b.getTime() && this.work_list[i].dev_event_id != exclude_id) {
-                        //&& this.work_list[i].dev_event_id !=this.editForm.dev_event_id
+                    if (a.getTime() == b.getTime() && this.star_list[i].dev_event_id != exclude_id) {
+                        //&& this.star_list[i].dev_event_id !=this.editForm.dev_event_id
                         var temp = new Object;
-                        temp.start = new Date(this.work_list[i].event_date + " " + this.work_list[i].start_time + ":00");
-                        temp.end = new Date(this.work_list[i].event_date + " " + this.work_list[i].end_time + ":00");
+                        temp.start = new Date(this.star_list[i].event_date + " " + this.star_list[i].start_time + ":00");
+                        temp.end = new Date(this.star_list[i].event_date + " " + this.star_list[i].end_time + ":00");
                         computed_list.push(temp)
                     }
                 }
@@ -739,7 +758,7 @@
             filter_dev_event: function () {
                 //显示时间范围
                 var self = this;
-                var filter_work_list = new Array();
+                var filter_star_list = new Array();
 
                 function cloneObject(obj) {
                     if (obj === null) {
@@ -755,8 +774,8 @@
                     return o;
                 }
 
-                for (var i in self.work_list) {
-                    var tmp = cloneObject(self.work_list[i])
+                for (var i in self.star_list) {
+                    var tmp = cloneObject(self.star_list[i])
                     tmp['startTime'] = this.filter_time(tmp['start_time'])
                     tmp['endTime'] = this.filter_time(tmp['end_time'])
                     if (tmp['up_reporter_id']) {
@@ -768,22 +787,22 @@
                             tmp['down_reporter_ids'][i] = parseInt(tmp['down_reporter_ids'][i])
                         }
                     }
-                    filter_work_list.push(tmp)
+                    filter_star_list.push(tmp)
                 }
-                return filter_work_list;
+                return filter_star_list;
             },
 
-            get_dev_event: function (params) {
+            get_star_list: function (params) {
                 var self = this;
-                this.$axios.get('/works/get_dev_events/', {
+                this.$axios.get('star/list', {
                     params: {
                         filter_date: this.filters.filterDate,
                         project_id: this.filters.project_id
                     }
                 })
                     .then(function (response) {
-                            self.work_list = eval(response.data.content);
-                            self.filter_work_list = self.filter_dev_event()
+                            self.star_list = eval(response.data);
+                            // self.filter_star_list = self.filter_dev_event()
                         }
                     );
             },
@@ -836,7 +855,7 @@
                         let params = this.makePostReady(para)
                         this.$axios.post('/works/update_devevent/', params).then(function (response) {
                             if (response.data.code == 1) {
-                                self.get_dev_event();
+                                self.get_star_list();
                                 self.$message({
                                     message: response.data.msg,
                                     type: 'success'
@@ -866,7 +885,7 @@
                         })
                             .then(function (response) {
                                     if (response.data.code == 1) {
-                                        self.get_dev_event()
+                                        self.get_star_list()
                                         self.$message({
                                             message: response.data.msg,
                                             type: 'success'
@@ -926,14 +945,14 @@
             },
             get_event_excel: function () {
                 var self = this;
-                this.$axios.get('/works/get_event_excel /', {
+                this.$axios.get('/star/list /', {
                     params: {
                         filter_date: self.filters.filterDate,
                         project_id: self.filters.project_id
                     }
                 })
                     .then(function (response) {
-                            self.work_list = eval(response.data.content);
+                            self.star_list = eval(response.data);
                         }
                     );
             },
@@ -954,7 +973,7 @@
                                 self.addFormVisible = false;
                                 // self.filters.filterDate = ''
                                 self.filters.project_id = ''
-                                self.get_dev_event()
+                                self.get_star_list()
                                 self.$message({
                                     message: response.data.msg,
                                     type: 'success'
